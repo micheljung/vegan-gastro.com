@@ -1,0 +1,151 @@
+<mjml>
+  <mj-head>
+    <mj-title>Hello world</mj-title>
+    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,500"></mj-font>
+    <mj-attributes>
+      <mj-all font-family="Roboto, Helvetica, sans-serif"></mj-all>
+      <mj-text font-weight="300" font-size="16px" color="#616161" line-height="24px"></mj-text>
+      <mj-section padding="0px"></mj-section>
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section padding-top="30px">
+      <mj-column width="100%">
+        <mj-text>
+          <h1>Dear Restaurant</h1>
+          <p></p>
+          <p>
+            Veganism has become more than just a hot food trend; it's now a global movement. Every day, more and more
+            of your customers are choosing a vegan lifestyle.
+          </p>
+          <p>
+            Despite veganism's rise, many restaurateurs remain hesitant about adding vegan menu options. Some reasons
+            include a perceived lack of demand, high cost, and the hassle of adding vegan dishes to menus.
+          </p>
+          <p>
+            In this letter, we would like to help you discover that these reasons are invalid and why veganism presents
+            one of the biggest opportunities for your restaurant. You'll learn:
+          </p>
+          <ul>
+            <li>Just how popular vegan dishes are – even among non-vegans</li>
+            <li>That many restaurants are warming to this trend</li>
+            <li>Why you should include plant-based menu options</li>
+            <li>7 essential tips you should consider when adding plant-based dishes to your menu</li>
+          </ul>
+        </mj-text>
+        <mj-text>
+          <h1>The Benefits of Adding Vegan Dishes to Your Menu</h1>
+          <p>
+            It takes <strong>just one person</strong> seeking a plant-based meal in a family or group to
+            <strong>influence the entire party's choice</strong>
+            of where to eat. With both vegans and non-vegans fueling the demand for vegan dishes, you can capture these
+            customers with even just a few vegan menu items.
+          </p>
+          <p>
+            Customers will perceive you as a more inclusive restaurant when you offer these options. You'll also appeal
+            to a broader market: vegans, vegetarians, flexitarians, as well as environmentally and health conscious
+            consumers.
+          </p>
+          <p>
+            And because the vegan community is tight-knit and appreciative of restaurants that cater to them, they'll
+            likely tell their friends, which will lead to powerful, free word-of-mouth marketing for your restaurant.
+          </p>
+          <p>
+            By clearly marking plant-based options on your menu, people won't have to take up your time asking
+            questions, and they don't have to go elsewhere.
+          </p>
+        </mj-text>
+        <mj-text>
+          <h1>7 Essential Tips for Adding Vegan and Vegetarian Options to Your Menu</h1>
+          <h2>#1: Make Sure Your Vegan Dishes Are Appealing</h2>
+          <p>
+            Many restaurateurs say that they offer vegan options. But upon arriving, customers find the options are
+            actually limited to a few bland side salads.
+          </p>
+          <p>
+            Chances are, diners won't be rushing back for that, and restaurant owners can misinterpret the results as a
+            lack of demand.
+          </p>
+          <p>
+            Take just a little more time to research and brainstorm what dishes you want to add to your menu. The
+            options at your disposal really are limitless – from vegan macaroni and cheese and black bean veggie
+            burgers, to vegan lentil soup and even delicious vegan ice cream.
+          </p>
+          <p>
+            A lack of variety is also a common mistake that many restaurateurs make. Include several types of dishes
+            across your starters, mains, and desserts.
+          </p>
+
+          <h2>#2: Pick Menu Items to Fit Your Brand</h2>
+          <p>
+            Any menu items you add need to match your brand and overall restaurant concept. Customers looking for vegan
+            options will be looking for a similar, if not the same, experience as other diners. For example, if you run
+            a burger joint with unconventional combinations, it makes perfect sense to include a vegan burger option
+            with similar toppings or creative twists as your meat options.
+          </p>
+          <p>
+            To ensure the dishes you produce align with your brand, work closely with your chef while brainstorming.
+          </p>
+
+          <h2>#3: Update Your Online and Offline Menus</h2>
+          <p>Once you’ve chosen your menu items, don’t forget to update your menus – both online and offline – and your
+            menu management system with these new options. These updates ensure your customers actually know what’s on
+            the menu and that you capture the right sales data for your business.
+          </p>
+
+          <h2>#4: Highlight Your New Menu Items</h2>
+          <p>
+            While you’re updating your menu with the mouth-watering new additions, add a way to indicate which dishes
+            are vegan. Whether you have vegan dishes in their own section on the menu, or with a symbol next to them
+            indicating their vegan, it will show your vegan diners you’ve thought of them every step of the way!
+          </p>
+          <h2>#5: Update Your Menu For Cross-Selling</h2>
+          <p>Have you noticed that certain items on a menu often work well together? And that grouping these items
+            together encourages diners to purchase these dishes?
+          </p>
+          <p>When adding your vegan dishes to your menu, make sure you pair them with complimentary dishes to boost
+            profits.
+          </p>
+          <p>For example, a Portobello burger pairs perfectly with a light earthy Pinot Noir.</p>
+
+          <h2>#6: Train Your Staff</h2>
+          <p>Diners will likely have several questions about vegan dishes, like what ingredients are used or protein
+            options available. Make sure you provide employees with proper menu training so they can answer these
+            questions without having to check with the kitchen.
+          </p>
+          <p>Some training ideas include having taste tests so that servers know exactly what the vegan dishes taste
+            like, and even introducing quiz nights where you ask questions about the dishes and give employees rewards
+            for getting it right.
+          </p>
+          <p>This training will improve the servers’ menu knowledge, helping them cross and upsell.</p>
+          <p>And we all know what that means: an increase in the average restaurant check size at your restaurant.</p>
+
+          <h2>#7: Spread the Word</h2>
+          <p>Finally, after putting in all the work – from selecting appealing items that match your brand to training
+            your employees – let your customers know about the changes.
+          </p>
+          <p>A great way to spread the word is through your restaurant’s social media. Release images of the new dishes
+            on Instagram.
+          </p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column width="11%">
+        <mj-image padding-right="0px" padding-left="25px" align="left" width="70px"
+                  href="https://twitter.com/MrJustaine" src="https://cdn.recast.ai/newsletter/justine.png"></mj-image>
+      </mj-column>
+      <mj-column width="89%">
+        <mj-text padding="0 25px">
+          <p style="color:#BDBDBD; line-height: 9px">Justine - <a href="https://recast.ai?ref=newsletter"
+                                                                  style="color: #3498DB;">
+            Recast.AI
+          </a> team
+          </p>
+          <p style="font-style: italic; color:#BDBDBD; line-height: 9px">Your light in the storm</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
