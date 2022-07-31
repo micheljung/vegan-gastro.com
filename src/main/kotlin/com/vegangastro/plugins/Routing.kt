@@ -7,8 +7,15 @@ import io.ktor.server.routing.*
 fun Application.configureRouting() {
 
   routing {
-    static("/static") {
-      resources("static")
+    static("/tips/") {
+      static("en") {
+        staticBasePackage = "static.tips.en"
+        defaultResource("index.html")
+      }
+      static("de") {
+        staticBasePackage = "static.tips.de"
+        defaultResource("index.html")
+      }
     }
   }
 }
