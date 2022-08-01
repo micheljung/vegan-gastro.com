@@ -129,22 +129,15 @@ fun Application.configureTemplating() {
 
       placeProvider.getPlaces(country)
         .map {
-          it.apply {
-            if (it.email == null && it.website != null) {
-              websiteScraper.scrape(it.website).let { info ->
-                 return@map placeRepository.save(
-                  it.copy(
-                    email = info.email,
-                    locale = info.locale,
-                    needsReview = needsReview(info),
-                  ),
-                )
-              }
+          if (it.email != null || it.website == null) {
+            it
+          } else {
+            websiteScraper.scrape(it.website).let { info ->
+              placeRepository.save(it.copy(email = info.email, locale = info.locale, needsReview = needsReview(info)))
             }
           }
         }
-        .filter { it.email != null }
-        .filter { it.sent == null }
+        .filter { it.email != null && it.sent == null && !it.needsReview }
         .forEach {
           emailService.send(
             Template.STANDARD_DE_CH.subject, Template.STANDARD_DE_CH, it.email!!,
