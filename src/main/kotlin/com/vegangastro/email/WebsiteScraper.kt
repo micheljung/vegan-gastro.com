@@ -70,7 +70,7 @@ class WebsiteScraper : KoinComponent {
 
   companion object {
     private val htmlRegexOptions = setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
-    val emailRegex = Regex("[a-zA-Z][a-zA-Z\\d_.+-]+@[a-zA-Z][a-zA-Z\\d_.-]+\\.[a-zA-Z_.-]{2,5}", htmlRegexOptions)
+    val emailRegex = Regex("[a-zA-Z][a-zA-Z\\d_.+-]+@[a-zA-Z][a-zA-Z\\d_.-]+\\.[a-zA-Z_.-]{2,24}", htmlRegexOptions)
     val langRegex = Regex("<html[^>]+?lang=\"(.+?)\"", htmlRegexOptions)
     val contactLinkRegex = Regex("href=\"([^\"]+)\">.*?(?:Contact|Kontakt|Impressum)[^<]*</a>", htmlRegexOptions)
     val impressumLinkRegex = Regex("href=\"([^\"]+)\">.*?Impressum[^<]*</a>", htmlRegexOptions)
