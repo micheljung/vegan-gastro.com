@@ -14,15 +14,16 @@ class WebsiteScraper : KoinComponent {
 
   private val logger = LoggerFactory.getLogger(WebsiteScraper::class.java)
 
-  fun scrape(website: URL): WebsiteInfo {
-    logger.info("Scraping $website")
-    val body = read(website)
+  fun scrape(url: URL): WebsiteInfo {
+    logger.info("Scraping $url")
+    val body = read(url)
     val email = findEmailOnBody(body)
-      ?: findContactLink(body, website, contactLinkRegex)?.let { findEmailOnBody(read(URL(it))) }
-      ?: findContactLink(body, website, impressumLinkRegex)?.let { findEmailOnBody(read(URL(it))) }
+      ?: findContactLink(body, url, contactLinkRegex)?.let { findEmailOnBody(read(URL(it))) }
+      ?: findContactLink(body, url, impressumLinkRegex)?.let { findEmailOnBody(read(URL(it))) }
     val locale = findLocaleOnBody(body)
-    val country = countryFromUrl(website)
+    val country = countryFromUrl(url)
     return WebsiteInfo(
+      url,
       email,
       locale?.let { Locale.Builder().setLocale(it).setRegion(country).build() },
     )
@@ -77,6 +78,7 @@ class WebsiteScraper : KoinComponent {
 }
 
 data class WebsiteInfo(
+  val url: URL,
   val email: String?,
   val locale: Locale?,
 )

@@ -132,7 +132,13 @@ fun Application.configureTemplating() {
           it.apply {
             if (it.email == null && it.website != null) {
               websiteScraper.scrape(it.website).let { info ->
-                return@map placeRepository.save(it.copy(email = info.email, locale = info.locale))
+                 return@map placeRepository.save(
+                  it.copy(
+                    email = info.email,
+                    locale = info.locale,
+                    needsReview = needsReview(info),
+                  ),
+                )
               }
             }
           }

@@ -26,6 +26,8 @@ class PlaceRepository : KoinComponent {
         it[PlaceTable.id].value,
         it[PlaceTable.placeId],
         it[PlaceTable.name],
+        it[PlaceTable.needsReview],
+        it[PlaceTable.address],
         it[PlaceTable.language]?.let { lang -> Locale(lang, it[PlaceTable.country] ?: "") },
         it[PlaceTable.website]?.let { website -> URL(website) },
         it[PlaceTable.email],
@@ -33,9 +35,21 @@ class PlaceRepository : KoinComponent {
       )
     }
       ?: PlacesApi.placeDetails(geoApiContext, placeId)
-        .fields(PlaceDetailsRequest.FieldMask.NAME, PlaceDetailsRequest.FieldMask.WEBSITE)
+        .fields(
+          PlaceDetailsRequest.FieldMask.NAME,
+          PlaceDetailsRequest.FieldMask.WEBSITE,
+          PlaceDetailsRequest.FieldMask.FORMATTED_ADDRESS,
+        )
         .await().let { details ->
-          Place(null, placeId, details.name, Locale.getDefault(), details.website)
+          Place(
+            null,
+            placeId,
+            details.name,
+            true,
+            details.formattedAddress,
+            Locale.getDefault(),
+            details.website,
+          )
         }
         .let { save(it) }
   }
@@ -45,6 +59,8 @@ class PlaceRepository : KoinComponent {
       val id = PlaceTable.insertAndGetId {
         it[placeId] = place.placeId
         it[name] = place.name
+        it[needsReview] = place.needsReview
+        it[address] = place.address
         it[language] = place.locale?.language
         it[country] = place.locale?.country
         it[website] = place.website?.toExternalForm()
@@ -56,6 +72,8 @@ class PlaceRepository : KoinComponent {
       PlaceTable.update({ PlaceTable.id eq place.id }) {
         it[placeId] = place.placeId
         it[name] = place.name
+        it[needsReview] = place.needsReview
+        it[address] = place.address
         it[language] = place.locale?.language
         it[country] = place.locale?.country
         it[website] = place.website?.toExternalForm()
@@ -70,6 +88,8 @@ class PlaceRepository : KoinComponent {
 object PlaceTable : IntIdTable("place") {
   val placeId = varchar("placeId", 255).uniqueIndex()
   val name = varchar("name", 255)
+  var needsReview = bool("needsReview")
+  var address = varchar("address", 255).nullable()
   var language = varchar("language", 2).nullable()
   var country = varchar("country", 2).nullable()
   val website = varchar("website", 255).nullable()
@@ -81,6 +101,8 @@ data class Place(
   val id: Int?,
   val placeId: String,
   val name: String,
+  val needsReview: Boolean = false,
+  val address: String?,
   val locale: Locale?,
   val website: URL?,
   val email: String? = null,
