@@ -2,6 +2,7 @@ package com.vegangastro.plugins
 
 import com.vegangastro.email.EmailService
 import com.vegangastro.email.Template
+import com.vegangastro.email.WebsiteInfo
 import com.vegangastro.email.WebsiteScraper
 import com.vegangastro.places.PlaceProvider
 import com.vegangastro.places.PlaceRepository
@@ -69,7 +70,7 @@ fun Application.configureTemplating() {
       val params = call.receiveParameters()
       val emailAddress = params["emailAddress"].toString()
 
-      emailService.send("Test", Template.STANDARD_DE_CH, emailAddress)
+      emailService.send("Test", Template.STANDARD_DE_CH, emailAddress, emptyMap())
 
       call.respondHtmlTemplate(RootTemplate()) {
         header {
@@ -139,7 +140,12 @@ fun Application.configureTemplating() {
         .filter { it.email != null }
         .filter { it.sent == null }
         .forEach {
-          emailService.send("Your menu", Template.STANDARD_DE_CH, it.email!!)
+          emailService.send(
+            Template.STANDARD_DE_CH.subject, Template.STANDARD_DE_CH, it.email!!,
+            mapOf(
+              "restaurantName" to it.name,
+            ),
+          )
           placeRepository.save(it.copy(sent = Instant.now()))
         }
 
@@ -155,3 +161,5 @@ fun Application.configureTemplating() {
     }
   }
 }
+
+fun needsReview(info: WebsiteInfo) = info.email != "info@${info.url.host}"

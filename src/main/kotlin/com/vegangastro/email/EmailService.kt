@@ -16,7 +16,7 @@ class EmailService : KoinComponent {
   private val properties by inject<EmailProperties>()
   private val templateRenderer by inject<TemplateRenderer>()
 
-  fun send(subject: String, template: Template, to: String) {
+  fun send(subject: String, template: Template, to: String, replacements: Map<String, String>) {
     SimpleEmail().apply {
       hostName = properties.smtpHost
       setSmtpPort(properties.smtpPort)
@@ -25,7 +25,7 @@ class EmailService : KoinComponent {
       isSSLOnConnect = properties.smtpUseSsl
       setFrom(properties.from)
       this.subject = subject
-      setContent(templateRenderer.render(template), ContentType.Text.Html.toString())
+      setContent(templateRenderer.render(template, replacements), ContentType.Text.Html.toString())
       addTo(to)
     }.send()
   }
@@ -41,7 +41,14 @@ enum class Template(
   fun getString(): String {
     val resourceName = "/mjml/$templateName.$locale.mjml"
     val stream = javaClass.getResourceAsStream(resourceName) ?: error("Could not find $resourceName")
-    return stream.use { BufferedReader(InputStreamReader(stream)).readText() }
+    return stream.use { BufferedReader(InputStreamReader(stream)).readText()
+      .replace("ä", "&auml;")
+      .replace("ö", "&ouml;")
+      .replace("ü", "&uuml;")
+      .replace("Ä", "&Auml;")
+      .replace("Ö", "&Ouml;")
+      .replace("Ü", "&Uuml;")
+    }
   }
 }
 
