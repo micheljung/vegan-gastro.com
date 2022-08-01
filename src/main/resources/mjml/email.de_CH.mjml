@@ -1,0 +1,63 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column width="100%">
+        <mj-text>
+          <p>
+            Sehr geehrte*r Inhaber*in von {{ restaurantName }},
+          </p>
+          <p>
+            ich wende mich mit einem Vorschlag an Sie, von dem sowohl Sie als auch ihre Kunden profitieren können.
+          </p>
+          <p>
+            Die meisten Gerichte, die in Gastbetrieben angeboten werden, beinhalten tierische Zutaten. Bis vor einiger
+            Zeit war das auch für mich völlig selbstverständlich.
+          </p>
+          <p>
+            Seit ich jedoch gelernt habe, wie
+            <a href="https://animalequality.de/unsere-themen/">grausam die Tierindustrie tatsächlich ist</a>,
+            boykottiere ich alle von Tieren gewonnen Produkte, also auch alle Lebensmittel, die Fleisch, Milch oder Eier
+            enthalten.
+          </p>
+          <p>
+            Mit meiner Ansicht bin ich nicht alleine. Jahr für Jahr entscheiden sich immer mehr Menschen für vegane
+            Produkte. Kein Wunder boomen vegane Produkte nicht nur bei Detailhändler, sondern selbst bei Fastfood
+            Ketten wie Burger King und McDonald's.
+          </p>
+          <p>
+            Diese Entwicklung hat je länger je mehr direkte Auswirkungen auf Ihren Betrieb:
+          </p>
+          <ul>
+            <li>Ohne ein Veganes Angebot nimmt die Anzahl ihrer potentieller Kunden stetig ab.</li>
+            <li>Ihre Konkurrenz hat den Trend bereits erkannt.</li>
+            <li>Es braucht <strong>nur eine Person</strong>, die ein veganes Gericht möchte, um die
+              Entscheidung <strong>einer ganzen Gruppe</strong> zu beeinflussen, wo gegessen wird.
+            </li>
+          </ul>
+          <p>
+            Daher mein Vorschlag an Sie: handeln Sie ökonimisch klug, gehen Sie mit der Zeit, nutzen Sie diesen Trend
+            zu Ihren Gunsten und ergänzen Sie Ihr Angebot um vegane Gerichte! Sie verschaffen sich einen
+            Wettbewerbsvorteil, profitieren von einem besseren Ruf und ihre Kundschaft von einem breiteren Angebot.
+          </p>
+          <p>
+            Die Umsetzung ist weder teuer noch schwierig. Sie können zum Beispiel <a
+            href="{{ tipsUrl }}">diese 5 einfachen Schritte
+          </a> befolgen.
+          </p>
+          <p>Verfügen Sie bereits über ein veganes Angebot? Grossartig! Warum bauen Sie dieses nicht noch weiter aus,
+            etwa um vegane Desserts?
+          </p>
+          <p>Ich sende diese E-Mail an viele Restaurants. Damit ich Sie in Zukunft nicht erneut kontaktiere, wüsste ich
+            gerne ob Sie diese E-Mail gelesen haben. Klicken Sie hierzu einfach auf
+            <a href="{{ readConfirmationUrl }}">Ja, ich habe diese E-Mail gelesen.</a>
+          </p>
+          <p>
+            Freundliche Grüsse,
+            <br>
+            Michel Jung
+          </p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 val bootstrapVersion = "5.1.3"
 val commonsEmailVersion = "1.5"
 val exposedVersion = "0.38.2"
@@ -9,14 +11,16 @@ val kotlinVersion = "1.6.21"
 val kotlinxHtmlVersion = "0.7.5"
 val kotlinWrappersVersion = "1.0.0-pre.360"
 val kotlinCssVersion = "1.0.0-pre.332-kotlin-1.6.21"
-val ktorVersion = "2.0.2"
+val ktorVersion = "2.1.0"
 val logbackVersion = "1.2.11"
 val prometheusVersion = "1.9.0"
 val mjml4jClientVersion = "1.0.0"
+val kotlinxSerializationVersion = "1.4.0-RC"
 
 plugins {
   application
   kotlin("jvm") version "1.6.21"
+  kotlin("plugin.serialization") version "1.6.21"
   id("com.google.devtools.ksp") version "1.6.21-1.0.5"
 }
 
@@ -38,6 +42,10 @@ sourceSets.main {
   java.srcDirs("build/generated/ksp/main/kotlin")
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+}
+
 dependencies {
   implementation("com.google.maps:google-maps-services:$googleMapsVersion")
   implementation("com.h2database:h2:$h2databaseVersion")
@@ -47,12 +55,15 @@ dependencies {
   implementation("io.insert-koin:koin-ktor:$koinVersion")
   implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
   ksp("io.insert-koin:koin-ksp-compiler:$koinKspVersion")
+  implementation("io.ktor:ktor-client-cio:$ktorVersion")
+  implementation("io.ktor:ktor-client-core:$ktorVersion")
   implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
   implementation("io.ktor:ktor-server-host-common-jvm:$ktorVersion")
   implementation("io.ktor:ktor-server-metrics-micrometer-jvm:$ktorVersion")
   implementation("io.ktor:ktor-server-webjars:$ktorVersion")
   implementation("io.ktor:ktor-server-html-builder:$ktorVersion")
   implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+  implementation("io.ktor:ktor-server-websockets:$ktorVersion")
   implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
   implementation("org.apache.commons:commons-email:$commonsEmailVersion")
   implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -60,6 +71,7 @@ dependencies {
   implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
   implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
   implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlinCssVersion")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
   implementation("org.webjars:bootstrap:$bootstrapVersion")
 
   // Test dependencies

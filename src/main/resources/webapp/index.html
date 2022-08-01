@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello</title>
+  <link rel="Stylesheet" type="text/css" href="webjars/bootstrap/bootstrap.css">
+
+  <script type="module">
+    import {h, render} from 'https://unpkg.com/preact@latest?module'
+    import {useEffect, useState} from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'
+    import htm from 'https://unpkg.com/htm?module';
+
+    const html = htm.bind(h);
+
+    function isDefined(obj) {
+      return obj !== null && obj !== undefined
+    }
+
+    function connectWebSocket(uri, onMessage, setWs) {
+      const ws = new WebSocket(uri);
+      ws.onopen = () => {
+        console.log('Connected')
+      }
+      ws.onmessage = onMessage
+      ws.onerror = e => {
+        console.error(e);
+      }
+      ws.onclose = () => {
+        setTimeout(function () {
+          console.log(`Reconnecting to ${uri}...`)
+          connectWebSocket(uri, onMessage, setWs)
+        }, 3000)
+      }
+      setWs(ws)
+    }
+
+    function wsSend(ws, type, payload) {
+      ws.send(JSON.stringify({"type": type, "payload": payload}))
+    }
+
+    function Table({jobs}) {
+      return html`
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Country</th>
+            <th>City</th>
+          </tr>
+          ${Array.from(jobs.values()).map(it => html`
+            <tr key="${it.id}">
+              <td>${it.id}</td>
+              <td>${it.country}</td>
+              <td>${it.city}</td>
+            </tr>
+          `)}
+        </table>`;
+    }
+
+    function PlaceSearch({ws, countries, onSearchStart}) {
+      const [country, setCountry] = useState()
+      const [city, setCity] = useState("")
+      useEffect(() => {
+        setCountry(countries[0]);
+      }, [countries]);
+
+      const search = () => {
+        wsSend(ws, "search", {"country": country, "city": city})
+        onSearchStart()
+      }
+
+      const regionNames = new Intl.DisplayNames(
+        ['en'], {type: 'region'}
+      );
+
+      return html`
+        <div class="container overflow-hidden">
+          <div class="row">
+            <div class="col gy-2">
+              <h5 class="card-title">Enter a place</h5>
+              <p>The program will find up to 60 restaurants in that area.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col gy-2">
+              <select class="form-select" value=${country} onChange=${event => setCountry(event.target.value)}>
+                ${countries.map(country => html`
+                  <option value="${country}">${regionNames.of(country)}</option>`)}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col gy-2">
+              <input type="text" class="form-control"
+                     placeholder="City"
+                     onInput=${event => setCity(event.target.value)}
+                     value=${city}/>
+              <div class="form-text">No autocomplete as it costs money, you'll have to be precise</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col gy-2">
+              <button class="btn btn-primary" onClick=${search}>Search</button>
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    function SearchProgress({placeStatuses}) {
+      const progress = placeStatuses.size / 60
+      const progressPercentage = Math.floor(progress * 100)
+
+      return html`
+        <div class="container">
+          <h5 class="card-title">Searching</h5>
+          <p>Searching for restaurants, their e-mail address, and language.</p>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                 style="width: ${progressPercentage}%">${progressPercentage}%
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    function LocaleSelect({supportedLocales, disabled, locale, setLocale, validateLocale}) {
+      return html`
+        <select class="form-select
+                ${validateLocale(locale) ? "is-valid" : "is-invalid"}"
+                value=${locale}
+                disabled=${disabled ? "true" : ""}
+                onChange=${event => setLocale(event.target.value)}>
+          <option value="">Select...</option>
+          ${supportedLocales.map(locale => html`
+            <option value="${locale}">${locale}</option>
+          `)}
+        </select>`
+    }
+
+    function seemsValid(emailAddress) {
+      return isDefined(emailAddress) && /^[a-zA-Z][a-zA-Z\d_.+-]*@[a-zA-Z][a-zA-Z\d_.-]*\.[a-zA-Z]{2,24}$/.test(emailAddress)
+    }
+
+    function SearchResult({ws, place, supportedLocales}) {
+      const validateLocale = (locale) => supportedLocales.includes(locale)
+
+      const [name, setName] = useState(place.name)
+      const [email, setEmail] = useState(place.email)
+      const [locale, setLocale] = useState(supportedLocales.includes(place.locale) ? place.locale : "")
+      const [sent, setSent] = useState(false)
+
+      const emailValid = seemsValid(email)
+      const nameValid = isDefined(name)
+      const languageValid = validateLocale(locale)
+      const allValid = emailValid && nameValid && languageValid
+
+      const onContactPlaceClicked = () => {
+        wsSend(ws, "contactPlace", {place: place})
+        // FIXME wait for confirmation
+        setSent(true)
+      }
+
+      useEffect(() => {
+        place.name = name
+        place.email = email
+        place.locale = locale
+      }, [name, email, locale])
+
+      const sendButtonActive = !allValid || sent
+
+      return html`
+        <tr>
+          <td>
+            <input type="text"
+                   class="form-control ${nameValid ? "is-valid" : "is-invalid"}"
+                   value="${name}"
+                   onInput=${event => setName(event.target.value)}
+                   disabled=${sent ? "true" : ""}/>
+          </td>
+          <td>
+            ${place.address.split(", ").map(line => html`${line}<br/>`)}
+          </td>
+          <td class="text-center">
+            <a href="${place.website}" target="_blank" class="text-decoration-none">🌍</a>
+          </td>
+          <td>
+            <input type="text"
+                   class="form-control ${emailValid ? "is-valid" : "is-invalid"}"
+                   value="${email}"
+                   onInput=${event => setEmail(event.target.value)}
+                   disabled=${sent ? "true" : ""}/>
+          </td>
+          <td>
+            <${LocaleSelect}
+              supportedLocales=${supportedLocales}
+              place=${place}
+              disabled=${sent}
+              locale=${locale}
+              setLocale=${setLocale}
+              validateLocale=${validateLocale}
+            />
+          </td>
+          <td class="text-center">
+            <button
+              class="btn ${sent ? "btn-outline-success" : sendButtonActive ? "btn-outline-primary" : "btn-primary"}"
+              onClick=${onContactPlaceClicked}
+              disabled=${!allValid || sent}>
+              ${sent ? "Sent!" : "Send"}
+            </button>
+          </td>
+        </tr>`
+    }
+
+    function SearchResults({ws, placeStatuses, supportedLocales}) {
+      return html`
+        <div class="container">
+          <h5 class="card-title">Search Results</h5>
+          <p>Please fix and confirm the data.</p>
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th class="col-3">Name</th>
+              <th class="col-2">Address</th>
+              <th class="col-1">Website</th>
+              <th class="col-3">E-Mail</th>
+              <th class="col-2">Language</th>
+              <th class="col-1">Send</th>
+            </tr>
+            </thead>
+            <tbody>
+            ${Array.from(placeStatuses.values()).map(it => {
+              return html`
+                <${SearchResult} ws=${ws} place=${it.place} supportedLocales=${supportedLocales}/>`
+            })}
+            </tbody>
+          </table>
+        </div>
+      `
+    }
+
+    function App(props) {
+      const [supportedLocales, setSupportedLocales] = useState(new Map())
+      const [placeStatuses, setPlaceStatuses] = useState(new Map())
+      const [showSearchForm, setShowSearchForm] = useState(true)
+      const [showProgress, setShowProgress] = useState(false)
+      const [showResults, setShowResults] = useState(false)
+      const [supportedCountries, setSupportedCountries] = useState([])
+      const [ws, setWs] = useState(undefined)
+      const [summary, setSummary] = useState({
+        contacted: 0,
+        reacted: 0,
+        needReview: 0,
+        numCountries: 0,
+      })
+      useEffect(() => {
+        if (ws === undefined) {
+          setPlaceStatuses(new Map())
+        }
+      }, [ws])
+
+      function onMessage(message) {
+        const object = JSON.parse(message.data);
+        switch (object.type) {
+          case "placeStatus":
+            handlePlaceStatusUpdate(object.payload)
+            break
+          case "searchDone":
+            handleSearchDone()
+            break
+          case "summary":
+            handleSummaryUpdate(object.payload)
+            break
+          case "supportedLocales":
+            handleSupportedLocales(object.payload)
+            break
+          case "supportedCountries":
+            handleSupportedCountries(object.payload)
+            break
+          default:
+            console.warn("Unhandled: " + message)
+        }
+      }
+
+      useEffect(() => {
+        connectWebSocket('ws://' + location.host + '/ws', onMessage, setWs)
+      }, [])
+
+      function handlePlaceStatusUpdate(placeStatus) {
+        setPlaceStatuses(oldValue => {
+          const newValue = new Map(oldValue)
+          newValue.set(placeStatus.place.id, placeStatus)
+          return newValue
+        })
+      }
+
+      function handleSearchDone() {
+        setShowProgress(false)
+        setShowResults(true)
+      }
+
+      function handleSummaryUpdate(summaryData) {
+        setSummary(summaryData)
+      }
+
+      function handleSupportedLocales(supportedLocales) {
+        setSupportedLocales(supportedLocales.locales)
+      }
+
+      function handleSupportedCountries(supportedCountries) {
+        setSupportedCountries(supportedCountries.countries)
+      }
+
+      function onSearchStart() {
+        setShowSearchForm(false)
+        setShowProgress(true)
+        setShowResults(false)
+      }
+
+      return html`
+        <div class="container-xxl">
+          <h1>Let's ask all restaurants to offer vegan menus</h1>
+          <p>
+            <span>${summary.contacted}</span> restaurants in <span>${summary.numCountries}</span> countries have been
+            contacted so far. <span>${summary.reacted}</span> restaurants reacted.${' '}
+            <span>${summary.needReview}</span>${' '}
+            addresses need to be reviewed.
+          </p>
+
+          <div class="row">
+            <div class="col gy-2">
+              <div class="card">
+                <div class="card-body">
+                  ${showSearchForm && html`
+                    <${PlaceSearch} ws=${ws} onSearchStart=${onSearchStart} countries=${supportedCountries}/>
+                  `}
+                  ${showProgress && html`
+                    <${SearchProgress} placeStatuses="${placeStatuses}"/>
+                  `}
+                  ${showResults && html`
+                    <${SearchResults} ws=${ws} placeStatuses="${placeStatuses}" supportedLocales="${supportedLocales}"/>
+                  `}
+                </div>
+              </div>
+            </div>
+          </div>
+            <!--        <${Table} jobs="${placeStatuses}"/>-->
+        </div>`;
+    }
+
+    render(html`
+      <${App} name="Michel"/>`, document.body);
+  </script>
+</head>
+<body>
+</body>
+</html>
