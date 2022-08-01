@@ -25,7 +25,14 @@ class EmailService : KoinComponent {
       isSSLOnConnect = properties.smtpUseSsl
       setFrom(properties.from)
       this.subject = subject
-      setContent(templateRenderer.render(template, replacements), ContentType.Text.Html.toString())
+      val content = templateRenderer.render(template).let {
+        var newString = it
+        replacements.entries.forEach { entry ->
+          newString = newString.replace("{{ ${entry.key} }}", entry.value)
+        }
+        newString
+      }
+      setContent(content, ContentType.Text.Html.toString())
       addTo(to)
     }.send()
   }

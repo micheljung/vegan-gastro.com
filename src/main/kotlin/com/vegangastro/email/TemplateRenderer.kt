@@ -10,12 +10,9 @@ import org.koin.core.component.inject
 class TemplateRenderer : KoinComponent {
 
   private val mjmlClient by inject<MJMLClient>()
+  private val cache: MutableMap<Template, String> = mutableMapOf()
 
-  fun render(template: Template, replacements: Map<String, String>): String =
-    mjmlClient.render(RenderRequest(template.getString())).html.let {
-      replacements.entries.forEach { entry ->
-        it.replace("{{ ${entry.key} }}", entry.value)
-      }
-      it
-    }
+  fun render(template: Template): String = cache.computeIfAbsent(template) {
+    mjmlClient.render(RenderRequest(template.getString())).html
+  }
 }
