@@ -32,10 +32,11 @@ class EmailService : KoinComponent {
 }
 
 enum class Template(
+  val subject: String,
   val templateName: String,
   val locale: Locale,
 ) {
-  STANDARD_ENGLISH("email", Locale.ENGLISH);
+  STANDARD_DE_CH("Ihr Menü", "simple", Locale("de", "CH"));
 
   fun getString(): String {
     val resourceName = "/mjml/$templateName.$locale.mjml"

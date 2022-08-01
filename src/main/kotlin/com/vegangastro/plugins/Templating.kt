@@ -1,13 +1,15 @@
 package com.vegangastro.plugins
 
-import com.vegangastro.email.EmailScraper
 import com.vegangastro.email.EmailService
 import com.vegangastro.email.Template
+import com.vegangastro.email.WebsiteScraper
 import com.vegangastro.places.PlaceProvider
 import com.vegangastro.places.PlaceRepository
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
 import org.koin.ktor.ext.inject
@@ -17,7 +19,7 @@ fun Application.configureTemplating() {
 
   val emailService: EmailService by inject()
   val placeProvider: PlaceProvider by inject()
-  val emailScraper: EmailScraper by inject()
+  val websiteScraper: WebsiteScraper by inject()
   val placeRepository: PlaceRepository by inject()
 
   routing {
@@ -67,7 +69,7 @@ fun Application.configureTemplating() {
       val params = call.receiveParameters()
       val emailAddress = params["emailAddress"].toString()
 
-      emailService.send("Test", Template.STANDARD_ENGLISH, emailAddress)
+      emailService.send("Test", Template.STANDARD_DE_CH, emailAddress)
 
       call.respondHtmlTemplate(RootTemplate()) {
         header {
@@ -128,9 +130,8 @@ fun Application.configureTemplating() {
         .map {
           it.apply {
             if (it.email == null && it.website != null) {
-              it.email = emailScraper.scrape(it.website!!)
-              if (it.email != null) {
-                placeRepository.save(it)
+              websiteScraper.scrape(it.website).let { info ->
+                return@map placeRepository.save(it.copy(email = info.email, locale = info.locale))
               }
             }
           }
@@ -138,13 +139,18 @@ fun Application.configureTemplating() {
         .filter { it.email != null }
         .filter { it.sent == null }
         .forEach {
-          emailService.send("Your menu", Template.STANDARD_ENGLISH, it.email!!)
-          it.sent = Instant.now()
-          placeRepository.save(it)
+          emailService.send("Your menu", Template.STANDARD_DE_CH, it.email!!)
+          placeRepository.save(it.copy(sent = Instant.now()))
         }
 
       call.respondHtmlTemplate(RootTemplate()) {
         header { +"Sent!" }
+      }
+    }
+    get("/tips/{placeId}") {
+      call.respondRedirect {
+
+        this.path()
       }
     }
   }
