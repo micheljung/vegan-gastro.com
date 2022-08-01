@@ -137,7 +137,7 @@ fun Application.configureTemplating() {
             }
           }
         }
-        .filter { it.email != null && it.sent == null && !it.needsReview }
+        .filter { !it.ignore && it.email != null && it.sent == null && !it.needsReview }
         .forEach {
           emailService.send(
             Template.STANDARD_DE_CH.subject, Template.STANDARD_DE_CH, it.email!!,
