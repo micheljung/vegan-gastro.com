@@ -99,6 +99,11 @@ class PlaceRepository : KoinComponent {
       place
     }
   }
+
+  fun findAllByNeedsReview(needsReview: Boolean) = transaction {
+    PlaceTable.select { PlaceTable.needsReview eq needsReview }
+      .map { mapToPlace(it) }
+  }
 }
 
 object PlaceTable : IntIdTable("place") {

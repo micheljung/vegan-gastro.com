@@ -158,7 +158,46 @@ fun Application.configureTemplating() {
         this.path()
       }
     }
+    get("/review") {
+      call.respondHtmlTemplate(RootTemplate()) {
+        header {
+          +"Please review the email addresses of these restaurants"
+        }
+        content {
+          table(classes = "table table-sm table-hover") {
+            tr {
+              th { +"ID" }
+              th { +"Name" }
+              th { +"Website" }
+              th { +"Address" }
+              th { +"E-Mail" }
+              th { +"Bestätigen" }
+            }
+            placeRepository.findAllByNeedsReview(true).map {
+              tr {
+                td { +"${it.id}" }
+                td { +it.name }
+                td {
+                  it.website?.let { url ->
+                    a(href = url.toString()) { +url.toString() }
+                  }
+                }
+                td { +(it.address ?: "") }
+                td {
+                  input(InputType.text) {
+                    value = it.email ?: ""
+                  }
+                }
+                td {
+                  button { +"✔️" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-fun needsReview(info: WebsiteInfo) = info.email != "info@${info.url.host}"
+fun needsReview(info: WebsiteInfo) = info.email != "info@${info.url.host.removePrefix("www.")}"
