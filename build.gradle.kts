@@ -1,26 +1,29 @@
-val ktorVersion = "2.0.0"
-val kotlinVersion = "1.6.21"
-val logbackVersion = "1.2.11"
-val prometeusVersion = "1.8.5"
-val kotlinxHtmlVersion = "0.7.5"
+val ktorVersion = "3.5.1"
+val kotlinVersion = "2.4.10"
+val logbackVersion = "1.5.18"
+val prometeusVersion = "1.15.7"
+val kotlinxHtmlVersion = "0.11.0"
 
 plugins {
   application
-  kotlin("jvm") version "1.6.21"
+  kotlin("jvm") version "2.4.10"
 }
 
 group = "com.vegangastro"
 version = "0.0.1"
 application {
-  mainClass.set("ch.micheljung.ApplicationKt")
+  mainClass.set("com.vegangastro.ApplicationKt")
 
   val isDevelopment: Boolean = project.ext.has("development")
   applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+kotlin {
+  jvmToolchain(21)
+}
+
 repositories {
   mavenCentral()
-  maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
 dependencies {
@@ -32,6 +35,6 @@ dependencies {
   implementation("io.ktor:ktor-server-html-builder:$ktorVersion")
   implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
   implementation("ch.qos.logback:logback-classic:$logbackVersion")
-  testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+  testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }

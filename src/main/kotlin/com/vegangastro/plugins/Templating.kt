@@ -14,8 +14,8 @@ fun Application.configureTemplating() {
         body {
           h1 { +"Let's ask all restaurants to offer vegan menus" }
           p {
-            span { 0 }
-            +"restaurants have been contacted"
+            span { +"0" }
+            +" restaurants have been contacted"
           }
           h2 { +"How it works" }
           ol {
